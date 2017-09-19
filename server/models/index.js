@@ -32,8 +32,26 @@ module.exports = {
 
   users: {
     // Ditto as above.
-    get: function () {},
-    post: function () {}
+    get: function () {
+      return new Promise ((resolve, reject) => {
+        db.dbConnection.query('SELECT * FROM users;', (err, result) => {
+          if (err) {
+            reject(err);
+          }   
+          resolve(result);
+        });
+      });
+    },
+    post: function (username) {
+      return new Promise ((resolve, reject) => {
+        db.dbConnection.query(`INSERT IGNORE INTO users (username) VALUES (${'\'' + username + '\''});`, (err, result) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(result);          
+        });
+      });
+    }
   }
 };
 

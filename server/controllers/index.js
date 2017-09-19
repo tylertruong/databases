@@ -7,7 +7,6 @@ module.exports = {
     get: function (req, res) {
       models.messages.get()
         .then((result) => {
-          console.log('result', result);
           var data = {};
           data.results = result;
           res.writeHead(200, {'Content-Type': 'application/json'});
@@ -34,17 +33,22 @@ module.exports = {
 
   users: {
     // Ditto as above
-    get: function (req, res) {},
+    get: function (req, res) {
+      models.users.get()
+        .then((result) => {
+          var data = {};
+          data.results = result;
+          res.writeHead(200, {'Content-Type': 'application/json'});
+          res.end(JSON.stringify(data));
+        });
+    },
     post: function (req, res) {
       const {username} = req.body;
-   
-      dc.dbConnection.query(`INSERT IGNORE INTO users (username) VALUES (${'\'' + username + '\''});`, (err, result) => {
-        if (err) {
-          throw err;
-        }          
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        res.end();
-      });
+      models.users.post(username)
+        .then((result) => {
+          res.writeHead(200, {'Content-Type': 'application/json'});
+          res.end(JSON.stringify(result));
+        });
     }
   }
 };
