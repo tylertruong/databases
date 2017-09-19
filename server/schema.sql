@@ -11,9 +11,13 @@ CREATE TABLE rooms (
   PRIMARY KEY(id)
 );
 */
+
+/*
 CREATE TABLE users (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(30) NOT NULL UNIQUE KEY
+  createdAt DATETIME NOT NULL,
+  updatedAt DATETIME NOT NULL
 );
 
 
@@ -21,11 +25,13 @@ CREATE TABLE messages (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   text VARCHAR(300) NOT NULL,
   roomname VARCHAR(300) NOT NULL,
+  createdAt DATETIME NOT NULL,
+  updatedAt DATETIME NOT NULL,
   user_id INT,
   FOREIGN KEY(user_id)
     REFERENCES users(id)
 );
-
+*/
 
 
 /*  Execute this file from the command line by typing:

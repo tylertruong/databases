@@ -8,7 +8,18 @@ module.exports = {
       models.messages.get()
         .then((result) => {
           var data = {};
-          data.results = result;
+          data.results = [];
+          result.forEach(element => {
+            let obj = {};
+            obj.username = element.user.dataValues.username;
+            obj.text = element.text;
+            obj.roomname = element.roomname;
+            obj.id = element.id;
+            obj.createdAt = element.createdAt;
+            obj.updatedAt = element.updatedAt;
+            data.results.push(obj);
+          });
+          
           res.writeHead(200, {'Content-Type': 'application/json'});
           res.end(JSON.stringify(data));
         });
