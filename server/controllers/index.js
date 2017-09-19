@@ -5,20 +5,16 @@ var dc = require('../db/index.js');
 module.exports = {
   messages: {
     get: function (req, res) {
-      dc.dbConnection.query('SELECT * FROM messages INNER JOIN users ON users.id = messages.user_id;', (err, result) => {
-        if (err) {
-          throw err;
-        }   
-        var data = {};
-        data.results = result;
-        console.log('results', data.results);
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        res.end(JSON.stringify(data));
-      });
-
+      models.messages.get()
+        .then((result) => {
+          console.log('result', result);
+          var data = {};
+          data.results = result;
+          res.writeHead(200, {'Content-Type': 'application/json'});
+          res.end(JSON.stringify(data));
+        });
     }, // a function which handles a get request for all messages
     post: function (req, res) {
-// console.log()
       let body = [];
       req.on('data', (chunk) => {
         body.push(chunk);
@@ -27,22 +23,13 @@ module.exports = {
         body = body.toString();
         body = JSON.parse(body);
         const {username, text, roomname} = body; 
-        console.log(username, text, roomname);
-        dc.dbConnection.query(`INSERT IGNORE INTO users (name) VALUES (${'\'' + username + '\''});`, (err, result) => {
-          if (err) {
-            throw err;
-          }  
-          dc.dbConnection.query(`INSERT INTO messages (text, user_id, roomname) VALUES (${mysql.escape(text)}, (SELECT id FROM users WHERE name=${mysql.escape(username)}), ${mysql.escape(roomname)});`, (err, result) => {
-            if (err) {
-              throw err;
-            }          
+        models.messages.post(username, text, roomname)
+          .then((result) => {
             res.writeHead(200, {'Content-Type': 'application/json'});
-            res.end();
+            res.end(JSON.stringify(result));
           });
-        });
       });
-
-    } 
+    }
   },
 
   users: {
@@ -51,7 +38,7 @@ module.exports = {
     post: function (req, res) {
       const {username} = req.body;
    
-      dc.dbConnection.query(`INSERT IGNORE INTO users (name) VALUES (${'\'' + username + '\''});`, (err, result) => {
+      dc.dbConnection.query(`INSERT IGNORE INTO users (username) VALUES (${'\'' + username + '\''});`, (err, result) => {
         if (err) {
           throw err;
         }          
